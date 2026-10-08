@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Schibsted_Grotesk, Martian_Mono } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import LightRays from "@/components/ui/LightRays";
+import Navbar from "@/components/Navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const SchibstedGrotesk = Schibsted_Grotesk({
+  variable: "--font-schibsted_grotesk",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const MartianMono = Martian_Mono({
+  variable: "--font-martian_mono",
   subsets: ["latin"],
 });
 
@@ -21,9 +24,37 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={cn(
+        "min-h-screen",
+        "antialiased",
+        SchibstedGrotesk.variable,
+        MartianMono.variable,
+        "font-sans",
+      )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body>
+        <Navbar />
+
+        <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+          <LightRays
+            raysOrigin="top-center"
+            raysColor="#5dfeca"
+            raysSpeed={0.5}
+            lightSpread={0.5}
+            rayLength={3}
+            followMouse={true}
+            mouseInfluence={0.1}
+            noiseAmount={0}
+            distortion={0}
+            className="custom-rays"
+            pulsating={false}
+            fadeDistance={1}
+            saturation={1}
+          />
+        </div>
+
+        <main>{children}</main>
+      </body>
     </html>
   );
 }
