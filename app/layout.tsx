@@ -3,7 +3,7 @@ import { Schibsted_Grotesk, Martian_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import LightRays from "@/components/ui/LightRays";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/layout/Navbar";
 
 const SchibstedGrotesk = Schibsted_Grotesk({
   variable: "--font-schibsted_grotesk",

@@ -1,5 +1,6 @@
 import BookingForm from "@/components/BookingForm";
 import EventCard from "@/components/EventCard";
+import { Skeleton } from "@/components/ui/skeleton";
 import { IEvent } from "@/database/event.model";
 import { getSimiralEvents } from "@/lib/actions/events.actions";
 import Image from "next/image";
@@ -22,6 +23,7 @@ const EventDetail = ({
     </li>
   );
 };
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const EventDetailsPage = async ({
   params,
@@ -29,6 +31,11 @@ const EventDetailsPage = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
+
+  if (process.env.NODE_ENV === "development") {
+    await sleep(10000); // remove when done
+  }
+
   const response = await fetch(`${BASE_URL}/api/events/${slug}`);
   const { event }: { event: IEvent } = await response.json();
 
