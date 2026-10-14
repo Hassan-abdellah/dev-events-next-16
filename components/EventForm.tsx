@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
@@ -29,38 +28,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dropzone,
-  DropZoneArea,
-  DropzoneDescription,
-  DropzoneFileList,
-  DropzoneFileListItem,
-  DropzoneMessage,
-  DropzoneRemoveFile,
-  DropzoneTrigger,
-  useDropzone,
-} from "@/components/ui/dropzone";
-import { CloudUploadIcon, Trash2Icon } from "lucide-react";
+
 import { eventModes } from "@/lib/constants";
 import { eventFormSchema } from "@/FormSchema";
-
+import FileUploadInput from "./inputs/FileUploadInput";
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 const EventForm = () => {
-  const dropzone = useDropzone({
-    onDropFile: async (file: File) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return {
-        status: "success",
-        result: URL.createObjectURL(file),
-      };
-    },
-    validation: {
-      accept: {
-        "image/*": [".png", ".jpg", ".jpeg"],
-      },
-      maxSize: 10 * 1024 * 1024,
-      maxFiles: 10,
-    },
-  });
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
@@ -77,16 +52,51 @@ const EventForm = () => {
       mode: "",
       agenda: "",
       tags: "",
+      image: [],
     },
   });
 
-  function onSubmit(data: z.infer<typeof eventFormSchema>) {
-    console.log("data", data);
-  }
+  const handleAddEvent = async (data: z.infer<typeof eventFormSchema>) => {
+    try {
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "image" || key === "agenda" || key === "tags") return;
+        if (value === undefined || value === null) return;
+        formData.append(key, String(value));
+      });
+      const file = data.image?.[0];
+      if (!(file instanceof File)) throw new Error("Please select an image");
+      formData.append("image", file);
 
+      const toList = (s: string) =>
+        s
+          .split("|")
+          .map((x) => x.trim())
+          .filter(Boolean);
+
+      formData.append("agenda", JSON.stringify(toList(data.agenda)));
+      formData.append("tags", JSON.stringify(toList(data.tags)));
+
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/events`, {
+        method: "POST",
+        body: formData,
+      });
+
+      router.push("/");
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const handleImageChange = useCallback(
+    (files: File[]) => {
+      form.setValue("image", files, { shouldValidate: true });
+    },
+    [form],
+  );
   return (
     <section className="w-full sm:max-w-7xl mx-auto">
-      <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="form-rhf-demo" onSubmit={form.handleSubmit(handleAddEvent)}>
         <FieldGroup>
           <div className="grid gap-2 grid-cols-4">
             <Controller
@@ -431,67 +441,29 @@ const EventForm = () => {
           </div>
         </FieldGroup>
 
-        <div className="not-prose flex flex-col gap-4">
-          <FieldLabel>Image</FieldLabel>
-          <Dropzone {...dropzone}>
-            <div>
-              <DropZoneArea>
-                <DropzoneTrigger className="flex flex-col items-center gap-4 bg-transparent p-10 text-center text-sm w-full">
-                  <CloudUploadIcon className="size-8" />
-                  <div>
-                    <p className="font-semibold">Upload listing images</p>
-                    <p className="text-sm text-muted-foreground">
-                      Click here or drag and drop to upload
-                    </p>
-                  </div>
-                </DropzoneTrigger>
-              </DropZoneArea>
-            </div>
-
-            <DropzoneFileList className="grid grid-cols-3 gap-3 p-0">
-              {dropzone.fileStatuses.map((file) => (
-                <DropzoneFileListItem
-                  className="overflow-hidden rounded-md bg-secondary p-0 shadow-sm"
-                  key={file.id}
-                  file={file}
-                >
-                  {file.status === "pending" && (
-                    <div className="aspect-video animate-pulse bg-black/20" />
-                  )}
-                  {file.status === "success" && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={file.result}
-                      alt={`uploaded-${file.fileName}`}
-                      className="aspect-video object-cover"
-                    />
-                  )}
-                  <div className="flex items-center justify-between p-2 pl-4">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm">{file.fileName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {(file.file.size / (1024 * 1024)).toFixed(2)} MB
-                      </p>
-                    </div>
-                    <DropzoneRemoveFile
-                      variant="ghost"
-                      className="shrink-0 hover:outline"
-                    >
-                      <Trash2Icon className="size-4" />
-                    </DropzoneRemoveFile>
-                  </div>
-                </DropzoneFileListItem>
-              ))}
-            </DropzoneFileList>
-          </Dropzone>
-        </div>
+        <FileUploadInput
+          label="Image"
+          handleChange={handleImageChange}
+          invalid={form.getFieldState("image").invalid}
+          error={
+            form.formState.isSubmitted
+              ? form.formState.errors.image?.message
+              : undefined
+          }
+        />
       </form>
       <Field orientation="horizontal">
+        <Button
+          disabled={form.formState.isSubmitting}
+          type="submit"
+          form="form-rhf-demo"
+          className="px-8 py-4 rounded-lg cursor-pointer transition-colors duration-150"
+        >
+          Submit
+        </Button>
+
         <Button type="button" variant="outline" onClick={() => form.reset()}>
           Reset
-        </Button>
-        <Button type="submit" form="form-rhf-demo">
-          Submit
         </Button>
       </Field>
     </section>

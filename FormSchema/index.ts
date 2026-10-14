@@ -1,4 +1,6 @@
 import * as z from "zod";
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_TYPES = ["image/jpeg", "image/png"];
 
 const eventFormSchema = z.object({
   title: z
@@ -33,14 +35,8 @@ const eventFormSchema = z.object({
     .string()
     .min(5, "Event Location must be at least 5 characters.")
     .max(100, "Event Location must be at most 100 characters."),
-  organizer: z
-    .string()
-    .min(5, "Event Location must be at least 5 characters.")
-    .max(100, "Event Location must be at most 100 characters."),
-  agenda: z
-    .string()
-    .min(5, "Event Location must be at least 5 characters.")
-    .max(100, "Event Location must be at most 100 characters."),
+  organizer: z.string().min(5, "Event Location must be at least 5 characters."),
+  agenda: z.string().min(5, "Event Location must be at least 5 characters."),
   tags: z
     .string()
     .min(5, "Event Location must be at least 5 characters.")
@@ -53,6 +49,18 @@ const eventFormSchema = z.object({
       message:
         "Auto-detection is not allowed. Please select a specific language.",
     }),
+
+  image: z
+    .array(
+      z
+        .custom<File>((v) => v instanceof File, "Invalid file")
+        .refine((f) => f.size <= MAX_SIZE, "Max size is 10MB")
+        .refine(
+          (f) => ACCEPTED_TYPES.includes(f.type),
+          "Only JPG, PNG allowed",
+        ),
+    )
+    .min(1, "Please upload at least one image"),
 });
 
 export { eventFormSchema };
