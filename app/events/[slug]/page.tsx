@@ -1,6 +1,5 @@
 import BookingForm from "@/components/BookingForm";
 import EventCard from "@/components/EventCard";
-import { Skeleton } from "@/components/ui/skeleton";
 import { IEvent } from "@/database/event.model";
 import { getSimiralEvents } from "@/lib/actions/events.actions";
 import Image from "next/image";

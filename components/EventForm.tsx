@@ -6,34 +6,17 @@ import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Field, FieldGroup } from "@/components/ui/field";
 
 import { eventModes } from "@/lib/constants";
 import { eventFormSchema } from "@/FormSchema";
 import FileUploadInput from "./inputs/FileUploadInput";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
+import TextField from "./inputs/TextField";
+import SelectField from "./inputs/SelectField";
+import TextAreaField from "./inputs/TextAreaField";
+
 const EventForm = () => {
   const router = useRouter();
 
@@ -95,179 +78,115 @@ const EventForm = () => {
     [form],
   );
   return (
-    <section className="w-full sm:max-w-7xl mx-auto">
+    <section className="w-full sm:max-w-7xl mx-auto bg-dark-100/50 rounded-lg p-4 backdrop-filter backdrop-blur-xl card-shadow">
       <form id="form-rhf-demo" onSubmit={form.handleSubmit(handleAddEvent)}>
         <FieldGroup>
-          <div className="grid gap-2 grid-cols-4">
+          <div className="grid md:gap-2 gap-4 lg:grid-cols-4 md:grid-cols-3 grid-cols-1">
             <Controller
               name="title"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="col-span-3">
-                  <FieldLabel htmlFor="form-rhf-demo-title">Title</FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-title"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextField
+                  id="event-title"
+                  label="Title"
+                  placeholder="Enter Event Title e.g: Developer Conference"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  {...field}
+                  className="lg:col-span-3 md:col-span-2 col-span-1"
+                />
               )}
             />
             <Controller
               name="mode"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-select-mode">Mode</FieldLabel>
-                  <Select
-                    name={field.name}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger
-                      id="form-rhf-select-mode"
-                      aria-invalid={fieldState.invalid}
-                      className="min-w-30"
-                    >
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="auto">Auto</SelectItem>
-                      <SelectSeparator />
-                      {eventModes.map((mode) => (
-                        <SelectItem key={mode.value} value={mode.value}>
-                          {mode.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <SelectField
+                  name={field.name}
+                  handleChange={field.onChange}
+                  value={field.value}
+                  label="Mode"
+                  options={eventModes}
+                  id="event-mode"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                />
               )}
             />
           </div>
 
-          <div className="grid gap-2 grid-cols-4">
+          <div className="grid md:gap-2 gap-4 lg:grid-cols-4 md:grid-cols-2 grid-cols-1">
             <Controller
               name="venue"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-venue">Venue</FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-venue"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextField
+                  id="event-venue"
+                  label="Venue"
+                  placeholder="Enter Event Venue e.g: Apple Campus"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  {...field}
+                />
               )}
             />
             <Controller
               name="location"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-location">
-                    Location
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-location"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextField
+                  id="event-location"
+                  label="Location"
+                  placeholder="Enter Event Location e.g: New York"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  {...field}
+                />
               )}
             />
             <Controller
               name="date"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-date">Date</FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-date"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextField
+                  id="event-date"
+                  label="Date"
+                  placeholder="Enter Event Date e.g: 25-05-2026"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  {...field}
+                />
               )}
             />
             <Controller
               name="time"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-time">Time</FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-time"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextField
+                  id="event-time"
+                  label="Time"
+                  placeholder="Enter Event Time e.g: 08:30"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  {...field}
+                />
               )}
             />
           </div>
 
-          <div className="grid gap-2 grid-cols-2">
+          <div className="grid md:gap-2 gap-4 md:grid-cols-2 grid-cols-1">
             <Controller
               name="description"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-description">
-                    Description
-                  </FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-description"
-                      placeholder="I'm having an issue with the login button on mobile."
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/1000 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Include steps to reproduce, expected behavior, and what
-                    actually happened.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextAreaField
+                  id="event-description"
+                  label="Description"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  maxChars={1000}
+                  {...field}
+                />
               )}
             />
 
@@ -275,69 +194,31 @@ const EventForm = () => {
               name="overview"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-overview">
-                    Overview
-                  </FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-overview"
-                      placeholder="I'm having an issue with the login button on mobile."
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/500 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Include steps to reproduce, expected behavior, and what
-                    actually happened.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextAreaField
+                  id="event-overview"
+                  label="Overview"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  maxChars={500}
+                  {...field}
+                />
               )}
             />
           </div>
 
-          <div className="grid gap-2 grid-cols-2">
+          <div className="grid md:gap-2 gap-4 md:grid-cols-2 grid-cols-1">
             <Controller
               name="audience"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-audience">
-                    Audience
-                  </FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-audience"
-                      placeholder="I'm having an issue with the login button on mobile."
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/1000 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Include steps to reproduce, expected behavior, and what
-                    actually happened.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextAreaField
+                  id="event-audience"
+                  label="Audience"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  maxChars={1000}
+                  {...field}
+                />
               )}
             />
 
@@ -345,66 +226,32 @@ const EventForm = () => {
               name="organizer"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-organizer">
-                    Organizer
-                  </FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-organizer"
-                      placeholder="I'm having an issue with the login button on mobile."
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/500 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Include steps to reproduce, expected behavior, and what
-                    actually happened.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextAreaField
+                  id="event-organizer"
+                  label="Organizer"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  maxChars={500}
+                  {...field}
+                />
               )}
             />
           </div>
 
-          <div className="grid gap-2 grid-cols-2">
+          <div className="grid md:gap-2 gap-4 md:grid-cols-2 grid-cols-1">
             <Controller
               name="agenda"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-agenda">Agenda</FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-agenda"
-                      placeholder="at 8:00 Start the Event | at 8:15 Meet with the CEO | at 8:30 Gathering"
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/1000 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Please Sperate Each Item by |
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextAreaField
+                  id="event-agenda"
+                  label="Agenda"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  maxChars={1000}
+                  fieldDescription="Please Sperate Each Item by |"
+                  {...field}
+                />
               )}
             />
 
@@ -412,57 +259,47 @@ const EventForm = () => {
               name="tags"
               control={form.control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-tags">Tags</FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-tags"
-                      placeholder="AI | Cloud | Developing"
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/500 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Please Sperate Each Item by |
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+                <TextAreaField
+                  id="event-tags"
+                  label="Tags"
+                  invalid={fieldState.invalid}
+                  error={fieldState.error?.message}
+                  maxChars={500}
+                  fieldDescription="Please Sperate Each Item by |"
+                  {...field}
+                />
               )}
             />
           </div>
-        </FieldGroup>
 
-        <FileUploadInput
-          label="Image"
-          handleChange={handleImageChange}
-          invalid={form.getFieldState("image").invalid}
-          error={
-            form.formState.isSubmitted
-              ? form.formState.errors.image?.message
-              : undefined
-          }
-        />
+          <FileUploadInput
+            label="Image"
+            handleChange={handleImageChange}
+            invalid={form.getFieldState("image").invalid}
+            error={
+              form.formState.isSubmitted
+                ? form.formState.errors.image?.message
+                : undefined
+            }
+          />
+        </FieldGroup>
       </form>
-      <Field orientation="horizontal">
+      <Field orientation="horizontal" className="mt-4">
         <Button
           disabled={form.formState.isSubmitting}
           type="submit"
           form="form-rhf-demo"
-          className="px-8 py-4 rounded-lg cursor-pointer transition-colors duration-150"
+          className="px-8 py-4 rounded-lg cursor-pointer transition-colors duration-150 bg-primary hover:bg-blue"
         >
           Submit
         </Button>
 
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => form.reset()}
+          className="px-8 py-4 rounded-lg cursor-pointer transition-colors duration-150 bg-dark-200 hover:bg-dark-100 border-dark-200"
+        >
           Reset
         </Button>
       </Field>

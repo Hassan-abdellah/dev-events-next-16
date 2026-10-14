@@ -424,57 +424,55 @@ const Dropzone = <TUploadRes, TUploadError>(
 };
 Dropzone.displayName = "Dropzone";
 
-interface DropZoneAreaProps extends React.HTMLAttributes<HTMLDivElement> {}
-const DropZoneArea = forwardRef<HTMLDivElement, DropZoneAreaProps>(
-  ({ className, children, ...props }, forwardedRef) => {
-    const context = useDropzoneContext();
+const DropZoneArea = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, children, ...props }, forwardedRef) => {
+  const context = useDropzoneContext();
 
-    if (!context) {
-      throw new Error("DropzoneArea must be used within a Dropzone");
-    }
+  if (!context) {
+    throw new Error("DropzoneArea must be used within a Dropzone");
+  }
 
-    const { onFocus, onBlur, onDragEnter, onDragLeave, onDrop, ref } =
-      context.getRootProps();
+  const { onFocus, onBlur, onDragEnter, onDragLeave, onDrop, ref } =
+    context.getRootProps();
 
-    return (
-      // A11y behavior is handled through Trigger. All of these are only relevant to drag and drop which means this should be fine?
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-      <div
-        ref={(instance) => {
-          // TODO: test if this actually works?
-          ref.current = instance;
-          if (typeof forwardedRef === "function") {
-            forwardedRef(instance);
-          } else if (forwardedRef) {
-            forwardedRef.current = instance;
-          }
-        }}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onDragEnter={onDragEnter}
-        onDragLeave={onDragLeave}
-        onDrop={onDrop}
-        {...props}
-        aria-label="dropzone"
-        className={cn(
-          "flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          context.isDragActive && "animate-pulse bg-black/5",
-          context.isInvalid && "border-destructive",
-          className,
-        )}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    // A11y behavior is handled through Trigger. All of these are only relevant to drag and drop which means this should be fine?
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      ref={(instance) => {
+        // TODO: test if this actually works?
+        ref.current = instance;
+        if (typeof forwardedRef === "function") {
+          forwardedRef(instance);
+        } else if (forwardedRef) {
+          forwardedRef.current = instance;
+        }
+      }}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+      {...props}
+      aria-label="dropzone"
+      className={cn(
+        "flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        context.isDragActive && "animate-pulse bg-black/5",
+        context.isInvalid && "border-destructive",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+});
 DropZoneArea.displayName = "DropZoneArea";
-
-export interface DropzoneDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
 
 const DropzoneDescription = forwardRef<
   HTMLParagraphElement,
-  DropzoneDescriptionProps
+  React.HTMLAttributes<HTMLParagraphElement>
 >((props, ref) => {
   const { className, ...rest } = props;
   const context = useDropzoneContext();
@@ -517,26 +515,25 @@ const useDropzoneFileListContext = () => {
   return useContext(DropzoneFileListContext);
 };
 
-interface DropZoneFileListProps extends React.OlHTMLAttributes<HTMLOListElement> {}
-
-const DropzoneFileList = forwardRef<HTMLOListElement, DropZoneFileListProps>(
-  (props, ref) => {
-    const context = useDropzoneContext();
-    if (!context) {
-      throw new Error("DropzoneFileList must be used within a Dropzone");
-    }
-    return (
-      <ol
-        ref={ref}
-        aria-label="dropzone-file-list"
-        {...props}
-        className={cn("flex flex-col gap-4", props.className)}
-      >
-        {props.children}
-      </ol>
-    );
-  },
-);
+const DropzoneFileList = forwardRef<
+  HTMLOListElement,
+  React.OlHTMLAttributes<HTMLOListElement>
+>((props, ref) => {
+  const context = useDropzoneContext();
+  if (!context) {
+    throw new Error("DropzoneFileList must be used within a Dropzone");
+  }
+  return (
+    <ol
+      ref={ref}
+      aria-label="dropzone-file-list"
+      {...props}
+      className={cn("flex flex-col gap-4", props.className)}
+    >
+      {props.children}
+    </ol>
+  );
+});
 DropzoneFileList.displayName = "DropzoneFileList";
 
 interface DropzoneFileListItemProps<
@@ -594,11 +591,9 @@ const DropzoneFileListItem = forwardRef<
 });
 DropzoneFileListItem.displayName = "DropzoneFileListItem";
 
-interface DropzoneFileMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {}
-
 const DropzoneFileMessage = forwardRef<
   HTMLParagraphElement,
-  DropzoneFileMessageProps
+  React.HTMLAttributes<HTMLParagraphElement>
 >((props, ref) => {
   const { children, ...rest } = props;
   const context = useDropzoneFileListContext();
@@ -627,68 +622,63 @@ const DropzoneFileMessage = forwardRef<
   );
 });
 DropzoneFileMessage.displayName = "DropzoneFileMessage";
-interface DropzoneMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {}
 
-const DropzoneMessage = forwardRef<HTMLParagraphElement, DropzoneMessageProps>(
-  (props, ref) => {
-    const { children, ...rest } = props;
-    const context = useDropzoneContext();
+const DropzoneMessage = forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>((props, ref) => {
+  const { children, ...rest } = props;
+  const context = useDropzoneContext();
+  if (!context) {
+    throw new Error("DropzoneRootMessage must be used within a Dropzone");
+  }
+
+  const body = context.rootError ? String(context.rootError) : children;
+  return (
+    <p
+      ref={ref}
+      id={context.rootMessageId}
+      {...rest}
+      className={cn(
+        "h-5 text-[0.8rem] font-medium text-destructive",
+        rest.className,
+      )}
+    >
+      {body}
+    </p>
+  );
+});
+DropzoneMessage.displayName = "DropzoneMessage";
+
+const DropzoneRemoveFile = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, ...props }, ref) => {
+    const context = useDropzoneFileListContext();
     if (!context) {
-      throw new Error("DropzoneRootMessage must be used within a Dropzone");
+      throw new Error(
+        "DropzoneRemoveFile must be used within a DropzoneFileListItem",
+      );
     }
-
-    const body = context.rootError ? String(context.rootError) : children;
     return (
-      <p
+      <Button
         ref={ref}
-        id={context.rootMessageId}
-        {...rest}
+        onClick={context.onRemoveFile}
+        type="button"
+        size="icon"
+        {...props}
         className={cn(
-          "h-5 text-[0.8rem] font-medium text-destructive",
-          rest.className,
+          "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+          className,
         )}
       >
-        {body}
-      </p>
+        {props.children}
+        <span className="sr-only">Remove file</span>
+      </Button>
     );
   },
 );
-DropzoneMessage.displayName = "DropzoneMessage";
-
-interface DropzoneRemoveFileProps extends ButtonProps {}
-
-const DropzoneRemoveFile = forwardRef<
-  HTMLButtonElement,
-  DropzoneRemoveFileProps
->(({ className, ...props }, ref) => {
-  const context = useDropzoneFileListContext();
-  if (!context) {
-    throw new Error(
-      "DropzoneRemoveFile must be used within a DropzoneFileListItem",
-    );
-  }
-  return (
-    <Button
-      ref={ref}
-      onClick={context.onRemoveFile}
-      type="button"
-      size="icon"
-      {...props}
-      className={cn(
-        "aria-disabled:pointer-events-none aria-disabled:opacity-50",
-        className,
-      )}
-    >
-      {props.children}
-      <span className="sr-only">Remove file</span>
-    </Button>
-  );
-});
 DropzoneRemoveFile.displayName = "DropzoneRemoveFile";
 
-interface DropzoneRetryFileProps extends ButtonProps {}
-
-const DropzoneRetryFile = forwardRef<HTMLButtonElement, DropzoneRetryFileProps>(
+const DropzoneRetryFile = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, ...props }, ref) => {
     const context = useDropzoneFileListContext();
 
@@ -722,54 +712,53 @@ const DropzoneRetryFile = forwardRef<HTMLButtonElement, DropzoneRetryFileProps>(
 );
 DropzoneRetryFile.displayName = "DropzoneRetryFile";
 
-interface DropzoneTriggerProps extends React.LabelHTMLAttributes<HTMLLabelElement> {}
+const DropzoneTrigger = forwardRef<
+  HTMLLabelElement,
+  React.LabelHTMLAttributes<HTMLLabelElement>
+>(({ className, children, ...props }, ref) => {
+  const context = useDropzoneContext();
+  if (!context) {
+    throw new Error("DropzoneTrigger must be used within a Dropzone");
+  }
 
-const DropzoneTrigger = forwardRef<HTMLLabelElement, DropzoneTriggerProps>(
-  ({ className, children, ...props }, ref) => {
-    const context = useDropzoneContext();
-    if (!context) {
-      throw new Error("DropzoneTrigger must be used within a Dropzone");
-    }
+  const { fileStatuses, getFileMessageId } = context;
 
-    const { fileStatuses, getFileMessageId } = context;
+  const fileMessageIds = useMemo(
+    () =>
+      fileStatuses
+        .filter((file) => file.status === "error")
+        .map((file) => getFileMessageId(file.id)),
+    [fileStatuses, getFileMessageId],
+  );
 
-    const fileMessageIds = useMemo(
-      () =>
-        fileStatuses
-          .filter((file) => file.status === "error")
-          .map((file) => getFileMessageId(file.id)),
-      [fileStatuses, getFileMessageId],
-    );
-
-    return (
-      <label
-        ref={ref}
-        {...props}
-        className={cn(
-          "cursor-pointer rounded-sm bg-secondary px-4 py-2 font-medium ring-offset-background transition-colors focus-within:outline-none hover:bg-gray-600/80 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2",
-          className,
-        )}
-      >
-        {children}
-        <input
-          {...context.getInputProps({
-            style: {
-              display: undefined,
-            },
-            className: "sr-only",
-            tabIndex: undefined,
-          })}
-          aria-describedby={
-            context.isInvalid
-              ? [context.rootMessageId, ...fileMessageIds].join(" ")
-              : undefined
-          }
-          aria-invalid={context.isInvalid}
-        />
-      </label>
-    );
-  },
-);
+  return (
+    <label
+      ref={ref}
+      {...props}
+      className={cn(
+        "cursor-pointer rounded-sm bg-secondary px-4 py-2 font-medium ring-offset-background transition-colors focus-within:outline-none hover:bg-gray-600/80 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2",
+        className,
+      )}
+    >
+      {children}
+      <input
+        {...context.getInputProps({
+          style: {
+            display: undefined,
+          },
+          className: "sr-only",
+          tabIndex: undefined,
+        })}
+        aria-describedby={
+          context.isInvalid
+            ? [context.rootMessageId, ...fileMessageIds].join(" ")
+            : undefined
+        }
+        aria-invalid={context.isInvalid}
+      />
+    </label>
+  );
+});
 DropzoneTrigger.displayName = "DropzoneTrigger";
 
 interface InfiniteProgressProps extends React.HTMLAttributes<HTMLDivElement> {
